@@ -25,13 +25,14 @@ userSchema.set("toJSON", {
   }
 });
 
-userSchema.pre("save", function(next){
+userSchema.pre("save", function(next) {
   const user = this;
-  if(!user.isModified("password")) return next();
+  if (!user.isModified("password")) return next();
   bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
-    if (err) return next (err);
+    if (err) return next(err);
     user.password = hash;
-  })
+    next();
+  });
 });
 
 module.exports = mongoose.model("User", userSchema);
